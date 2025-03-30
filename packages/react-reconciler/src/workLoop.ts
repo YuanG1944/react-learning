@@ -8,6 +8,10 @@ function prepareFreshStack(fiber: FiberNode) {
 	workInProgress = fiber;
 }
 
+export function scheduleUpdateOnFiber(fiber: FiberNode) {
+	// 调度功能
+}
+
 function renderRoot(root: FiberNode) {
 	// 初始化
 	prepareFreshStack(root);

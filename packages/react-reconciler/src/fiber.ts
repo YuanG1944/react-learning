@@ -6,6 +6,7 @@ export class FiberNode {
 	type: any;
 	tag: WorkTag;
 	key: Key;
+	// HostComponent <div> div dom
 	stateNode: any | null;
 	ref: Ref;
 
@@ -18,10 +19,17 @@ export class FiberNode {
 	pendingProps: Props | null;
 	memoizedProps: Props | null;
 
-	// 在 currentFiberNode 和 workingProgressFiberNode 之间切换
+	// 双缓冲技术，在 currentFiberNode 和 workingProgressFiberNode 之间切换
 	alternate: FiberNode | null;
 	flags: Flags;
+	updateQueue: any;
 
+	/**
+	 *
+	 * @param tag 什么类型的节点
+	 * @param pendingProps 有哪些props需要改变
+	 * @param key ReactElement:Key
+	 */
 	constructor(tag: WorkTag, pendingProps: Props, key: Key) {
 		this.tag = tag;
 		this.key = key;
@@ -44,6 +52,7 @@ export class FiberNode {
 		this.pendingProps = pendingProps;
 		this.memoizedProps = null;
 		this.alternate = null;
+		this.updateQueue = null;
 
 		// 副作用
 		this.flags = NoFlags;
