@@ -2,9 +2,9 @@
   "name": "big-react",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "build:dev": "rm -rf dist && rollup --config scripts/rollup/dev.config.js",
+    "build:dev": "rm -rf dist && rollup --bundleConfigAsCjs --config scripts/rollup/dev.config.js",
     "demo": "vite serve demos/performance --config scripts/vite/vite.config.js --force",
     "lint": "eslint --ext .ts,.jsx,.tsx --fix --quiet ./packages",
     "test": "jest --config scripts/jest/jest.config.js"
