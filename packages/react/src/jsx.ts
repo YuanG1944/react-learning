@@ -8,7 +8,6 @@ import type {
 	ElementType
 } from 'shared/ReactTypes';
 
-
 const ReactElement = function (
 	type: Type,
 	key: Key,

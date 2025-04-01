@@ -8,6 +8,8 @@ import {
 
 import { FiberNode } from './fiber';
 import { processUpdateQueue, UpdateQueue } from './updateQueue';
+import { mountChildFibers, reconcilerChildFibers } from './childFibers';
+import { ReactElement } from 'shared/ReactTypes';
 
 export const beginWork = (wip: FiberNode | null): FiberNode | null => {
 	switch (wip?.tag) {
@@ -39,8 +41,15 @@ export const beginWork = (wip: FiberNode | null): FiberNode | null => {
 	return null;
 };
 
-function reconcileChildren(wip: FiberNode, nextChildren: any) {
-	throw new Error('Function not implemented.');
+function reconcileChildren(wip: FiberNode, children?: ReactElement) {
+	const current = wip.alternate;
+	if (current !== null) {
+		// update
+		wip.child = reconcilerChildFibers(wip, current.child, children);
+	} else {
+		// mount
+		wip.child = mountChildFibers(wip, null, children);
+	}
 }
 
 function updateHostRoot(wip: FiberNode) {
