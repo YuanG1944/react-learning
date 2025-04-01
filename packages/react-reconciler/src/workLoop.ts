@@ -1,18 +1,46 @@
+import { HostRoot } from './workTags';
 import { beginWork } from './beginWork';
 import { completeWork } from './completeWork';
-import { FiberNode } from './fiber';
+import { FiberNode, FiberRootNode } from './fiber';
+import { createWorkInProgress } from './fiberReconciler';
 
 let workInProgress: FiberNode | null = null;
 
-function prepareFreshStack(fiber: FiberNode) {
-	workInProgress = fiber;
+function prepareFreshStack(root: FiberRootNode) {
+	workInProgress = createWorkInProgress(root.current, {});
 }
 
 export function scheduleUpdateOnFiber(fiber: FiberNode) {
 	// 调度功能
+	const root = markUpdateFromFiberToRoot(fiber);
+	renderRoot(root);
 }
 
-function renderRoot(root: FiberNode) {
+// 从当前node遍历到root
+function markUpdateFromFiberToRoot(fiber: FiberNode): FiberRootNode | null {
+	let node = fiber;
+	let parent = node.return;
+
+	while (parent !== null) {
+		node = parent;
+		parent = node.return;
+	}
+
+	if (node.tag === HostRoot) {
+		return node.stateNode;
+	}
+
+	return null;
+}
+
+/**
+ * 出发更新的 API
+ * ReactDom.createRoot(render)
+ * this.setState
+ * useState 的 dispatch 方法
+ */
+function renderRoot(root: FiberRootNode | null) {
+	if (root === null) return;
 	// 初始化
 	prepareFreshStack(root);
 
@@ -21,7 +49,9 @@ function renderRoot(root: FiberNode) {
 			workLoop();
 			break;
 		} catch (e) {
-			console.error('workLoop发生错误', e);
+			if (__DEV__) {
+				console.error('workLoop发生错误', e);
+			}
 			workInProgress = null;
 		}
 	} while (true);

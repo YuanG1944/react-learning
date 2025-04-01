@@ -7,7 +7,7 @@ export class FiberNode {
 	tag: WorkTag;
 	key: Key;
 	// HostComponent <div> div dom
-	stateNode: any | null;
+	stateNode: FiberRootNode | null;
 	ref: Ref;
 
 	return: FiberNode | null;
@@ -18,10 +18,13 @@ export class FiberNode {
 
 	pendingProps: Props | null;
 	memoizedProps: Props | null;
+	memoizedState: any;
 
 	// 双缓冲技术，在 currentFiberNode 和 workingProgressFiberNode 之间切换
 	alternate: FiberNode | null;
+	// 副作用
 	flags: Flags;
+	// 更新队列
 	updateQueue: any;
 
 	/**
@@ -53,6 +56,7 @@ export class FiberNode {
 		this.memoizedProps = null;
 		this.alternate = null;
 		this.updateQueue = null;
+		this.memoizedState = null;
 
 		// 副作用
 		this.flags = NoFlags;
@@ -60,6 +64,7 @@ export class FiberNode {
 }
 
 export class FiberRootNode {
+	// 对应挂载的节点
 	container: Container;
 	current: FiberNode;
 	finishedWork: FiberNode | null;

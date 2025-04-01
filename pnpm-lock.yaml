@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@rollup/plugin-replace':
-        specifier: ^5.0.1
+        specifier: ^5.0.7
         version: 5.0.7(rollup@3.29.5)
       scheduler:
         specifier: ^0.23.0
