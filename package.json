@@ -6,9 +6,9 @@
   "scripts": {
     "build:dev": "rm -rf dist && rollup --bundleConfigAsCjs --config scripts/rollup/dev.config.js",
     "build:wdev": "rollup --bundleConfigAsCjs --config scripts/rollup/dev.config.js",
-    "demo": "vite serve demos/performance --config scripts/vite/vite.config.js --force",
     "lint": "eslint --ext .ts,.jsx,.tsx --fix --quiet ./packages",
-    "test": "jest --config scripts/jest/jest.config.js"
+    "test": "jest --config scripts/jest/jest.config.js",
+    "demo": "vite serve demos/test-fc --config scripts/vite/vite.config.js --force"
   },
   "keywords": [],
   "author": "",
@@ -21,8 +21,6 @@
     "@commitlint/config-conventional": "^17.1.0",
     "@rollup/plugin-alias": "^4.0.2",
     "@rollup/plugin-commonjs": "^23.0.0",
-    "@types/react": "^18.0.24",
-    "@types/react-dom": "^18.0.8",
     "@types/scheduler": "^0.16.2",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",

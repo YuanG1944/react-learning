@@ -2,12 +2,18 @@
 
 import {
 	appendInitialChild,
+	Container,
 	createInstance,
 	createTextInstance
 } from 'hostConfig';
 import { FiberNode } from './fiber';
 import { NoFlags } from './fiberFlags';
-import { HostComponent, HostRoot, HostText } from './workTags';
+import {
+	FunctionComponent,
+	HostComponent,
+	HostRoot,
+	HostText
+} from './workTags';
 
 export const completeWork = (wip: FiberNode | null): FiberNode | null => {
 	// 比较，返回子fiberNode
@@ -41,6 +47,9 @@ export const completeWork = (wip: FiberNode | null): FiberNode | null => {
 		case HostRoot:
 			bubbleProperties(wip);
 			return null;
+		case FunctionComponent:
+			bubbleProperties(wip);
+			return null;
 		default:
 			if (__DEV__) {
 				console.warn('未处理的completeWork情况', wip);
@@ -51,7 +60,7 @@ export const completeWork = (wip: FiberNode | null): FiberNode | null => {
 	return null;
 };
 
-function appendAllChildren(parent: FiberNode, wip: FiberNode) {
+function appendAllChildren(parent: Container, wip: FiberNode) {
 	let node = wip.child;
 
 	while (node !== null) {

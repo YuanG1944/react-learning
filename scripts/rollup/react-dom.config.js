@@ -17,6 +17,7 @@ export default [
 	{
 		input: `${pkgPath}/${module}`,
 		output: [
+			// 导出两份 兼容原版 react
 			{
 				file: `${pkgDistPath}/index.js`,
 				name: 'ReactDOM',
@@ -52,17 +53,17 @@ export default [
 			})
 		]
 	},
-	// react-test-utils
-	{
-		input: `${pkgPath}/test-utils.ts`,
-		output: [
-			{
-				file: `${pkgDistPath}/test-utils.js`,
-				name: 'testUtils',
-				format: 'umd'
-			}
-		],
-		external: ['react-dom', 'react'],
-		plugins: getBaseRollupPlugins()
-	}
+	// // react-test-utils
+	// {
+	// 	input: `${pkgPath}/test-utils.ts`,
+	// 	output: [
+	// 		{
+	// 			file: `${pkgDistPath}/test-utils.js`,
+	// 			name: 'testUtils',
+	// 			format: 'umd'
+	// 		}
+	// 	],
+	// 	external: ['react-dom', 'react'],
+	// 	plugins: getBaseRollupPlugins()
+	// }
 ];
