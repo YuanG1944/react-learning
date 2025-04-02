@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
+// console.info(import.meta.hot);
+
 const App = () => {
+	const [num, setNum] = useState('1-1');
 	return (
 		<div>
-			<span>
-				{/* HostText */}
-				<Hello />
-			</span>
+			<span>{num}</span>
 		</div>
 	);
 };
