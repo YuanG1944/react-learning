@@ -53,17 +53,18 @@ export default [
 			})
 		]
 	},
-	// // react-test-utils
-	// {
-	// 	input: `${pkgPath}/test-utils.ts`,
-	// 	output: [
-	// 		{
-	// 			file: `${pkgDistPath}/test-utils.js`,
-	// 			name: 'testUtils',
-	// 			format: 'umd'
-	// 		}
-	// 	],
-	// 	external: ['react-dom', 'react'],
-	// 	plugins: getBaseRollupPlugins()
-	// }
+	// react-test-utils
+	{
+		input: `${pkgPath}/test-utils.ts`,
+		output: [
+			{
+				file: `${pkgDistPath}/test-utils.js`,
+				name: 'testUtils',
+				format: 'umd'
+			}
+		],
+		// 外部依赖
+		external: ['react-dom', 'react'],
+		plugins: getBaseRollupPlugins()
+	}
 ];

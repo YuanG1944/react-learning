@@ -9,12 +9,11 @@ import {
 import { ReactElement } from 'shared/ReactTypes';
 
 export function createRoot(container: Container) {
-	debugger
 	const root = createContainer(container);
 
 	return {
 		render(element: ReactElement) {
-			updateContainer(element, root);
+			return updateContainer(element, root);
 		}
 	};
 }

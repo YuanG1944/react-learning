@@ -66,6 +66,14 @@ export const jsx = (
 	return ReactElement(type, key, ref, props);
 };
 
+export function isValidElement(object: any) {
+	return (
+		typeof object === 'object' &&
+		object !== null &&
+		object.$$typeof === REACT_ELEMENT_TYPE
+	);
+}
+
 export const jsxDEV = (type: ElementType, config: any) => {
 	let key: Key = null;
 	let ref: Ref = null;
