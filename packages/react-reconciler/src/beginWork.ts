@@ -1,17 +1,16 @@
+import type { ReactElement } from 'shared/ReactTypes';
+import { mountChildFibers, reconcileChildFibers } from './childFibers';
+import { FiberNode } from './fiber';
+import { renderWithHooks } from './fiberHooks';
+import { processUpdateQueue, UpdateQueue } from './updateQueue';
 import {
 	FunctionComponent,
 	HostComponent,
 	HostRoot,
 	HostText
 } from './workTags';
+
 // 递归中的递阶段
-
-import { FiberNode } from './fiber';
-import { processUpdateQueue, UpdateQueue } from './updateQueue';
-import { mountChildFibers, reconcilerChildFibers } from './childFibers';
-import { ReactElement } from 'shared/ReactTypes';
-import { renderWithHooks } from './fiberHooks';
-
 export const beginWork = (wip: FiberNode | null): FiberNode | null => {
 	switch (wip?.tag) {
 		case HostRoot:
@@ -42,45 +41,40 @@ export const beginWork = (wip: FiberNode | null): FiberNode | null => {
 	return null;
 };
 
-function reconcileChildren(wip: FiberNode, children?: ReactElement) {
-	const current = wip.alternate;
-	if (current !== null) {
-		// update
-		wip.child = reconcilerChildFibers(wip, current.child, children);
-	} else {
-		// mount
-		wip.child = mountChildFibers(wip, null, children);
-	}
+function updateFunctionComponent(wip: FiberNode) {
+	const nextChildren = renderWithHooks(wip);
+	reconcileChildren(wip, nextChildren);
+	return wip.child;
 }
 
 function updateHostRoot(wip: FiberNode) {
 	const baseState = wip.memoizedState;
 	const updateQueue = wip.updateQueue as UpdateQueue<Element>;
 	const pending = updateQueue.shared.pending;
-
-	// 计算后，清空updateQueue
 	updateQueue.shared.pending = null;
 	const { memorizedState } = processUpdateQueue(baseState, pending);
 	wip.memoizedState = memorizedState;
 
 	const nextChildren = wip.memoizedState;
 	reconcileChildren(wip, nextChildren);
-
 	return wip.child;
 }
 
 function updateHostComponent(wip: FiberNode) {
 	const nextProps = wip.pendingProps;
 	const nextChildren = nextProps.children;
-
 	reconcileChildren(wip, nextChildren);
-
 	return wip.child;
 }
 
-function updateFunctionComponent(wip: FiberNode) {
-	const nextChildren = renderWithHooks(wip);
+function reconcileChildren(wip: FiberNode, children?: ReactElement) {
+	const current = wip.alternate;
 
-	reconcileChildren(wip, nextChildren);
-	return wip.child;
+	if (current !== null) {
+		// update
+		wip.child = reconcileChildFibers(wip, current?.child, children);
+	} else {
+		// mount
+		wip.child = mountChildFibers(wip, null, children);
+	}
 }

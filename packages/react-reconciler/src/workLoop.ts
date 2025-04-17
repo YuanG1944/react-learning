@@ -108,10 +108,9 @@ function workLoop() {
 		performUnitOfWork(workInProgress);
 	}
 }
-
-function performUnitOfWork(fiber: FiberNode | null) {
+function performUnitOfWork(fiber: FiberNode) {
 	const next = beginWork(fiber);
-	fiber && (fiber.memoizedProps = fiber.pendingProps);
+	fiber.memoizedProps = fiber.pendingProps;
 
 	if (next === null) {
 		completeUnitOfWork(fiber);
@@ -120,17 +119,18 @@ function performUnitOfWork(fiber: FiberNode | null) {
 	}
 }
 
-function completeUnitOfWork(fiber: FiberNode | null) {
+function completeUnitOfWork(fiber: FiberNode) {
 	let node: FiberNode | null = fiber;
 
 	do {
 		completeWork(node);
-		const sibling = node?.sibling;
-		if (sibling) {
+		const sibling = node.sibling;
+
+		if (sibling !== null) {
 			workInProgress = sibling;
 			return;
 		}
-		node = node?.return ?? null;
+		node = node.return;
 		workInProgress = node;
 	} while (node !== null);
 }

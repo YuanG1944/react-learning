@@ -1,5 +1,3 @@
-// 递归中的归阶段
-
 import {
 	appendInitialChild,
 	Container,
@@ -7,28 +5,33 @@ import {
 	createTextInstance
 } from 'hostConfig';
 import { FiberNode } from './fiber';
-import { NoFlags } from './fiberFlags';
+import { NoFlags, Update } from './fiberFlags';
 import {
-	FunctionComponent,
-	HostComponent,
 	HostRoot,
-	HostText
+	HostText,
+	HostComponent,
+	FunctionComponent
 } from './workTags';
 
-export const completeWork = (wip: FiberNode | null): FiberNode | null => {
-	// 比较，返回子fiberNode
+function markUpdate(fiber: FiberNode) {
+	fiber.flags |= Update;
+}
 
-	const newProps = wip?.pendingProps;
-	const current = wip?.alternate;
+export const completeWork = (wip: FiberNode) => {
+	// 递归中的归
 
-	switch (wip?.tag) {
+	const newProps = wip.pendingProps;
+	const current = wip.alternate;
+
+	switch (wip.tag) {
 		case HostComponent:
 			if (current !== null && wip.stateNode) {
 				// update
 			} else {
-				// 1、构建Dom
-				// 2、将Dom插入到DOM树中
-				const instance = createInstance(wip.type, newProps); // dom节点
+				// 1. 构建DOM
+				// const instance = createInstance(wip.type, newProps);
+				const instance = createInstance(wip.type);
+				// 2. 将DOM插入到DOM树中
 				appendAllChildren(instance, wip);
 				wip.stateNode = instance;
 			}
@@ -37,9 +40,14 @@ export const completeWork = (wip: FiberNode | null): FiberNode | null => {
 		case HostText:
 			if (current !== null && wip.stateNode) {
 				// update
+				const oldText = current.memoizedProps.content;
+				const newText = newProps.content;
+				if (oldText !== newText) {
+					markUpdate(wip);
+				}
 			} else {
-				// 1、构建Dom
-				const instance = createTextInstance(newProps.content); // dom节点
+				// 1. 构建DOM
+				const instance = createTextInstance(newProps.content);
 				wip.stateNode = instance;
 			}
 			bubbleProperties(wip);
@@ -56,16 +64,14 @@ export const completeWork = (wip: FiberNode | null): FiberNode | null => {
 			}
 			break;
 	}
-
-	return null;
 };
 
 function appendAllChildren(parent: Container, wip: FiberNode) {
 	let node = wip.child;
 
 	while (node !== null) {
-		if (node?.tag === HostComponent || node?.tag === HostText) {
-			appendInitialChild(parent, node.stateNode);
+		if (node.tag === HostComponent || node.tag === HostText) {
+			appendInitialChild(parent, node?.stateNode);
 		} else if (node.child !== null) {
 			node.child.return = node;
 			node = node.child;
@@ -82,7 +88,6 @@ function appendAllChildren(parent: Container, wip: FiberNode) {
 			}
 			node = node?.return;
 		}
-
 		node.sibling.return = node.return;
 		node = node.sibling;
 	}
@@ -99,6 +104,5 @@ function bubbleProperties(wip: FiberNode) {
 		child.return = wip;
 		child = child.sibling;
 	}
-
 	wip.subtreeFlags |= subtreeFlags;
 }

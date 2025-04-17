@@ -49,6 +49,8 @@ export class FiberNode {
 	/** 双缓冲技术，在 currentFiberNode 和 workingProgressFiberNode 之间切换 */
 	alternate: FiberNode | null;
 
+	deletions: FiberNode[] | null;
+
 	/** 时间相关 */
 	/** 作用：表示当前 Fiber 节点的优先级。React 使用 lanes 来管理不同更新的优先级，确保高优先级的更新能够更快地得到处理。*/
 	/** lanes: Lanes
@@ -89,6 +91,7 @@ export class FiberNode {
 		// 副作用 */
 		this.flags = NoFlags;
 		this.subtreeFlags = NoFlags;
+		this.deletions = null;
 	}
 }
 
@@ -142,6 +145,7 @@ export function createWorkInProgress(current: FiberNode, pendingProps: Props) {
 		wip.pendingProps = pendingProps;
 		wip.flags = NoFlags;
 		wip.subtreeFlags = NoFlags;
+		wip.deletions = null;
 	}
 
 	wip.type = current.type;
